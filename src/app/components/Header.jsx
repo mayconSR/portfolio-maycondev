@@ -1,134 +1,119 @@
-"use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { FiMenu, FiX } from "react-icons/fi";
-
-const linksEN = [
-  { href: "/", label: "Home" },
-  { href: "/projects", label: "Projects" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-];
-const linksPT = [
-  { href: "/pt", label: "Início" },
-  { href: "/pt/projects", label: "Projetos" },
-  { href: "/pt/about", label: "Sobre" },
-  { href: "/pt/contact", label: "Contato" },
-];
+'use client'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useState } from 'react'
+import { FiMenu, FiX } from 'react-icons/fi'
+import ThemeToggle from './ThemeToggle'
 
 export default function Header() {
-  const pathname = usePathname();
-  const isPT = pathname.startsWith("/pt");
-  const links = isPT ? linksPT : linksEN;
-  const [open, setOpen] = useState(false);
+  const pathname = usePathname()
+  const [open, setOpen] = useState(false)
+  const isPT = pathname.startsWith('/pt')
+
+  const links = [
+    { href: isPT ? '/pt' : '/', label: isPT ? 'Início' : 'Home' },
+    { href: isPT ? '/pt/projects' : '/projects', label: isPT ? 'Projetos' : 'Projects' },
+    { href: isPT ? '/pt/contact' : '/contact', label: isPT ? 'Contato' : 'Contact' },
+  ]
 
   return (
-    <header className="sticky top-0 z-30 bg-white/80 dark:bg-neutral-900/80 border-b border-blue-100 dark:border-blue-900 backdrop-blur-md shadow-sm">
-      <div className="max-w-5xl mx-auto flex items-center px-4 h-16">
+    <header className="w-full border-b border-blue-100/60 dark:border-slate-800/60 bg-transparent fixed top-0 left-0 z-50">
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3 md:py-4">
+        {/* Logo */}
         <Link
-          href={isPT ? "/pt" : "/"}
-          className="font-bold text-lg bg-gradient-to-r from-blue-700 via-cyan-500 to-blue-400 bg-clip-text text-transparent drop-shadow"
+          href={isPT ? '/pt' : '/'}
+          className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-cyan-400 bg-clip-text text-transparent"
         >
           Maycon Dev
         </Link>
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex ml-auto gap-4">
-          {links.map((link) => (
+
+        {/* Navegação desktop */}
+        <nav className="hidden md:flex ml-auto gap-4 items-center">
+          {links.map(link => (
             <Link
               key={link.href}
               href={link.href}
-              className={`px-3 py-1 rounded-lg font-medium transition 
-                ${
-                  pathname === link.href
-                    ? "bg-gradient-to-r from-blue-600 to-cyan-400 text-white shadow"
-                    : "hover:bg-blue-50 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-200"
+              className={`px-3 py-2 rounded-lg font-medium transition 
+                ${pathname === link.href
+                  ? 'bg-gradient-to-r from-blue-600 to-cyan-400 text-white shadow'
+                  : 'text-blue-700 dark:text-blue-200 hover:bg-white/40 dark:hover:bg-white/10'
                 }`}
             >
               {link.label}
             </Link>
           ))}
-          {!isPT && (
-            <Link
-              href="/pt"
-              className="ml-2 px-3 py-1 rounded-lg font-medium text-blue-700 hover:bg-blue-50 transition"
-            >
+
+          {/* Idioma */}
+          {!isPT ? (
+            <Link href="/pt" className="ml-1 px-3 py-1 rounded-lg font-medium text-blue-700 dark:text-blue-200 hover:bg-white/40 dark:hover:bg-white/10 transition">
               PT
             </Link>
-          )}
-          {isPT && (
-            <Link
-              href="/"
-              className="ml-2 px-3 py-1 rounded-lg font-medium text-blue-700 hover:bg-blue-50 transition"
-            >
+          ) : (
+            <Link href="/" className="ml-1 px-3 py-1 rounded-lg font-medium text-blue-700 dark:text-blue-200 hover:bg-white/40 dark:hover:bg-white/10 transition">
               EN
             </Link>
           )}
+
+          {/* Toggle de tema */}
+          <ThemeToggle className="ml-1 border-slate-200/60 dark:border-slate-700/60 hover:bg-white/40 dark:hover:bg-white/10" />
         </nav>
-        {/* Mobile Menu Button */}
+
+        {/* Botão menu mobile */}
         <button
-          className="md:hidden ml-auto p-2 rounded-lg text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/50"
-          onClick={() => setOpen((o) => !o)}
-          aria-label={open ? "Fechar menu" : "Abrir menu"}
+          onClick={() => setOpen(true)}
+          aria-label="Abrir menu"
+          className="md:hidden p-2 rounded-lg border border-slate-200/60 dark:border-slate-700/60 hover:bg-white/40 dark:hover:bg-white/10 transition text-blue-700 dark:text-blue-200"
         >
-          {open ? <FiX size={28} /> : <FiMenu size={28} />}
+          <FiMenu size={22} />
         </button>
-        {/* Mobile Nav */}
-        {open && (
-          <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden flex flex-col">
-            <nav className="bg-white dark:bg-neutral-900 border-b border-blue-100 dark:border-blue-900 p-6 rounded-b-2xl flex flex-col gap-3 shadow-lg relative">
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Fechar menu"
-                className="absolute top-3 right-3 text-blue-700 dark:text-blue-100 hover:bg-blue-50 dark:hover:bg-blue-900/40 p-2 rounded transition md:hidden"
-              >
-                <FiX size={28} />
-              </button>
-              {links.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`px-3 py-2 rounded-lg font-medium transition w-fit
-            ${
-              pathname === link.href
-                ? "bg-gradient-to-r from-blue-600 to-cyan-400 text-white shadow"
-                : "hover:bg-blue-50 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-200"
-            }`}
-                  onClick={() => setOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="flex gap-2 mt-3">
-                {!isPT && (
-                  <Link
-                    href="/pt"
-                    className="px-3 py-1 rounded-lg font-medium text-blue-700 hover:bg-blue-50 transition"
-                    onClick={() => setOpen(false)}
-                  >
-                    PT
-                  </Link>
-                )}
-                {isPT && (
-                  <Link
-                    href="/"
-                    className="px-3 py-1 rounded-lg font-medium text-blue-700 hover:bg-blue-50 transition"
-                    onClick={() => setOpen(false)}
-                  >
-                    EN
-                  </Link>
-                )}
-              </div>
-            </nav>
-            {/* O clique fora do menu fecha o menu também */}
+      </div>
+
+      {/* Menu mobile (painel com fundo para leitura) */}
+      {open && (
+        <div className="fixed inset-0 z-40 bg-black/60 md:hidden flex flex-col">
+          <nav className="bg-white dark:bg-[#0b1220] border-b border-blue-100 dark:border-slate-800 p-6 rounded-b-2xl flex flex-col gap-3 shadow-lg relative">
+            {/* Fechar */}
             <button
-              className="flex-1"
               onClick={() => setOpen(false)}
               aria-label="Fechar menu"
-            ></button>
-          </div>
-        )}
-      </div>
+              className="absolute top-3 right-3 text-blue-700 dark:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800/60 p-2 rounded transition"
+            >
+              <FiX size={28} />
+            </button>
+
+            {links.map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`px-3 py-2 rounded-lg font-medium transition 
+                  ${pathname === link.href
+                    ? 'bg-gradient-to-r from-blue-600 to-cyan-400 text-white shadow'
+                    : 'text-blue-700 hover:bg-blue-50 dark:text-blue-200 dark:hover:bg-slate-800/60'
+                  }`}
+                onClick={() => setOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+
+            <div className="flex items-center gap-2 mt-3">
+              {!isPT ? (
+                <Link href="/pt" onClick={() => setOpen(false)} className="px-3 py-1 rounded-lg font-medium text-blue-700 hover:bg-blue-50 dark:text-blue-200 dark:hover:bg-slate-800/60 transition">
+                  PT
+                </Link>
+              ) : (
+                <Link href="/" onClick={() => setOpen(false)} className="px-3 py-1 rounded-lg font-medium text-blue-700 hover:bg-blue-50 dark:text-blue-200 dark:hover:bg-slate-800/60 transition">
+                  EN
+                </Link>
+              )}
+              <ThemeToggle className="border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/60" />
+            </div>
+          </nav>
+
+          {/* Clicar fora fecha */}
+          <button className="flex-1" onClick={() => setOpen(false)} aria-label="Fechar menu"></button>
+        </div>
+      )}
     </header>
-  );
+  )
 }

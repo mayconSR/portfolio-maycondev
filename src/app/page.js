@@ -49,7 +49,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.32, type: 'spring' }}
             className="text-3xl sm:text-4xl md:text-6xl font-extrabold mb-4 tracking-tight bg-gradient-to-r from-blue-700 via-cyan-500 to-purple-600 bg-clip-text text-transparent drop-shadow-[0_4px_24px_rgba(0,126,255,0.4)]"
           >
-            Hi, I'm Maycon
+            Hi, I&apos;m Maycon
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 24 }}
